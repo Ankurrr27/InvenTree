@@ -21,8 +21,9 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  products      Product[]
-  // bills         Bill[]
+    products Product[]
+    bills    Bill[]
+    logs     Log[]
 }
 
 model Product {
@@ -49,7 +50,65 @@ model Product {
   supplierId      String?
   // supplier        Supplier? @relation(fields: [supplierId], references: [id])
 
-  // billItems       BillItem[]
+  billItems BillItem[]
+}
+
+model Bill {
+  id            String      @id @default(cuid())
+
+  billNumber    String      @unique
+
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+
+  subtotal      Decimal     @db.Decimal(10,2)
+
+  discount      Decimal     @default(0) @db.Decimal(10,2)
+
+  tax           Decimal     @default(0) @db.Decimal(10,2)
+
+  totalAmount   Decimal     @db.Decimal(10,2)
+
+  paymentMode   String
+
+  status        String      @default("PAID")
+
+  createdAt     DateTime    @default(now())
+
+  items         BillItem[]
+  logs          Log[]
+}
+
+model BillItem {
+  id            String      @id @default(cuid())
+
+  billId        String
+  bill          Bill        @relation(fields: [billId], references: [id])
+
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id])
+
+  quantity      Int
+
+  unitPrice     Decimal     @db.Decimal(10,2)
+
+  totalPrice    Decimal     @db.Decimal(10,2)
+}
+
+model Log {
+  id            String      @id @default(cuid())
+
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+
+  billId        String?
+  bill          Bill?       @relation(fields: [billId], references: [id])
+
+  action        String
+
+  message       String
+
+  createdAt     DateTime    @default(now())
 }
 
 enum Role {
