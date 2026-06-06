@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,103 +7,71 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  password      String
-  role          Role      @default(STAFF)
-
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-    products Product[]
-    bills    Bill[]
-    logs     Log[]
+  id        String    @id @default(cuid())
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  name      String
+  password  String
+  role      Role      @default(STAFF)
+  updatedAt DateTime  @updatedAt
+  bills     Bill[]
+  logs      Log[]
+  products  Product[]
 }
 
 model Product {
-  id              String    @id @default(cuid())
-
-  name            String
-  description     String?
-
-  quantity        Int       @default(0)
-
-  purchasePrice   Decimal   @db.Decimal(10,2)
-  sellingPrice    Decimal   @db.Decimal(10,2)
-
-  minStockLevel   Int       @default(10)
-
-  category        String?
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-
-  createdById     String
-  createdBy       User      @relation(fields: [createdById], references: [id])
-
-  supplierId      String?
-  // supplier        Supplier? @relation(fields: [supplierId], references: [id])
-
-  billItems BillItem[]
+  id            String     @id @default(cuid())
+  name          String
+  description   String?
+  quantity      Int        @default(0)
+  purchasePrice Decimal    @db.Decimal(10, 2)
+  sellingPrice  Decimal    @db.Decimal(10, 2)
+  minStockLevel Int        @default(10)
+  category      String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  createdById   String
+  supplierId    String?
+  billItems     BillItem[]
+  createdBy     User       @relation(fields: [createdById], references: [id])
 }
 
 model Bill {
-  id            String      @id @default(cuid())
-
-  billNumber    String      @unique
-
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
-
-  subtotal      Decimal     @db.Decimal(10,2)
-
-  discount      Decimal     @default(0) @db.Decimal(10,2)
-
-  tax           Decimal     @default(0) @db.Decimal(10,2)
-
-  totalAmount   Decimal     @db.Decimal(10,2)
-
-  paymentMode   String
-
-  status        String      @default("PAID")
-
-  createdAt     DateTime    @default(now())
-
-  items         BillItem[]
-  logs          Log[]
+  id          String     @id @default(cuid())
+  billNumber  String     @unique
+  userId      String
+  subtotal    Decimal    @db.Decimal(10, 2)
+  discount    Decimal    @default(0) @db.Decimal(10, 2)
+  tax         Decimal    @default(0) @db.Decimal(10, 2)
+  totalAmount Decimal    @db.Decimal(10, 2)
+  paymentMode String
+  status      String     @default("PAID")
+  createdAt   DateTime   @default(now())
+  user        User       @relation(fields: [userId], references: [id])
+  items       BillItem[]
+  logs        Log[]
 }
 
 model BillItem {
-  id            String      @id @default(cuid())
-
-  billId        String
-  bill          Bill        @relation(fields: [billId], references: [id])
-
-  productId     String
-  product       Product     @relation(fields: [productId], references: [id])
-
-  quantity      Int
-
-  unitPrice     Decimal     @db.Decimal(10,2)
-
-  totalPrice    Decimal     @db.Decimal(10,2)
+  id         String  @id @default(cuid())
+  billId     String
+  productId  String
+  quantity   Int
+  unitPrice  Decimal @db.Decimal(10, 2)
+  totalPrice Decimal @db.Decimal(10, 2)
+  bill       Bill    @relation(fields: [billId], references: [id])
+  product    Product @relation(fields: [productId], references: [id])
 }
 
 model Log {
-  id            String      @id @default(cuid())
-
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
-
-  billId        String?
-  bill          Bill?       @relation(fields: [billId], references: [id])
-
-  action        String
-
-  message       String
-
-  createdAt     DateTime    @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  billId    String?
+  action    String
+  message   String
+  createdAt DateTime @default(now())
+  bill      Bill?    @relation(fields: [billId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
