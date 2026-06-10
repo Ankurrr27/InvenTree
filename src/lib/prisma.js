@@ -10,4 +10,6 @@ if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }
 
+console.log("SRC PRISMA FILE LOADED");
+
 export default prisma;

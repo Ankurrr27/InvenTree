@@ -3,7 +3,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans">
-        <h1 className="text-black">Ab bnana chalu krte hai Anubhav bhai !</h1>
+        <h1 className="text-black">Hooooo.....Ankur bhaiiiiii !</h1>
     </div>
   );
 }
